@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>2048</title>
+	
+</head>
+
+<body>
+	<div class="back-container" id="container">
+		<div class="back-row">
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		</div>
+		<div class="back-row">
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		</div>
+		<div class="back-row">
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		</div>
+		<div class="back-row">
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		  <div class="back-cell"></div>
+		</div>
+	</div>
+	<div class="game-container">
+
+	</div>
+</body>
+
+</html>
+
+<style>
+.back-cell{
+	width:100px;
+	height:100px;
+	background-color:rgb(181, 218, 168); 
+	border:1px solid rgb(166, 166, 166);
+	margin-right:10px;
+	float:left;
+}
+.back-cell:last-child{
+	margin-right:0px;
+}
+.back-row:last-child{
+	margin-bottom:0px;
+	width:440px;
+}
+.back-row{
+	height:100px;
+	margin-bottom:10px;
+}
+.back-container{
+	background-color: rgb(123, 194, 99);
+	padding:10px;
+	width:440px;
+	height:435px;
+}
+.tile-2 {
+    background-color:rgb(255, 255, 242); 
+}
+.tile-4 {
+    background: #ede0c8; 
+}
+.tile-8 {
+	color:white !important;
+    background: #f2b179; 
+}
+.tile-16 {
+	color:white !important;
+    background: #f59563; 
+}
+.tile-32 {
+	color:white !important;
+    background: #f67c5f; 
+}
+.tile-64 {
+    background: #f65e3b; 
+	color:white !important;
+	
+}
+.tile-128 {
+	color: #f9f6f2;
+    background: #edcf72;
+    font-size: 40px !important;
+}
+.tile-128 > .inner-text {
+	padding:24px 0 24px 0 !important;
+}
+.tile-256 {
+    color: #f9f6f2;
+    background: #edcc61;
+    font-size: 40px !important;
+}
+.tile-256 > .inner-text {
+	padding:24px 0 24px 0 !important;
+}
+.tile-512 {
+    color: #f9f6f2;
+    background: #edc850;
+    font-size: 40px !important;
+}
+.tile-512 > .inner-text {
+	padding:24px 0 24px 0 !important;
+}
+.tile-1024 {
+    color: #f9f6f2;
+    background: #edc53f;
+    font-size: 35px !important;
+}
+.tile-1024 > .inner-text {
+	padding:30px 0 30px 0 !important;
+}
+.tile-2048 {
+    color: #f9f6f2;
+    background: #edc22e;
+    font-size: 35px !important;
+}
+.tile-2048 > .inner-text {
+	padding:30px 0 30px 0 !important;
+}
+.tile-super {
+    color: #f9f6f2;
+    background: #3c3a32;
+    font-size: 35px !important;
+}
+.tile-super > .inner-text {
+	padding:30px 0 30px 0 !important;
+}
+.game-cell{
+	position:absolute;
+	width:100px;
+	height:100px;
+	font-size: 50px;
+	font-family: fantasy;
+	text-align: center;
+	color:rgb(132, 132, 132);
+	border:1px solid rgb(223, 223, 223); 
+}
+.inner-text{ padding:18px; }
+.h1{ left:18px; }
+.h2{ left:130px; }
+.h3{ left:242px; }
+.h4{ left:354px; }
+.v1{ top:18px; }
+.v2{ top:128px; }
+.v3{ top:238px; }
+.v4{ top:348px; }
+</style>
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+
+var gameVar = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+
+function randomNumber(){
+	var random = [];
+
+	for(var j = 0; j < 4; j++){
+		for(var i = 0; i < 4; i++){
+			if (gameVar[j][i] == 0) {
+				random.push(j+'#'+i);
+			}
+		}
+	}
+
+	if (random.length > 0){
+		var post = random[Math.floor(Math.random() * 153) % random.length];
+		var x = parseInt(post.split('#')[0]);
+		var y = parseInt(post.split('#')[1]);
+		$('.game-container').append('<div class="game-cell tile-2 h'+(y+1)+' v'+(x+1)+'"><div class="inner-text">2</div></div>');
+		gameVar[x][y] = 2;
+	}
+}
+
+function moveGame(){
+	if (event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 38 || event.keyCode == 40){
+		if (isGameOver()){
+			alert("Game Over");
+			return 0;
+		}
+		if (event.keyCode == 37){
+			if (moveLeft()){
+				randomNumber();	
+			}
+		}
+		if (event.keyCode == 39){
+			if (moveRight()){
+				randomNumber();	
+			}
+		}
+		if (event.keyCode == 38){
+			if (moveUp()){
+				randomNumber();	
+			}
+		}
+		if (event.keyCode == 40){
+			if (moveDown()){
+				randomNumber();	
+			}
+		}
+	}
+}
+
+function moveLeft(){
+	var flag = false;
+	
+	for(var j = 0; j < 4; j++){
+		var count = 0, last = 0;
+		for(var i = 0; i < 4; i++){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (i > 0 && count > 0){
+					flag = true;
+					if (gameVar[j][i - count] == 0){
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).attr('class', 'game-cell tile-'+value+' h'+(i-count+1)+' v'+(j+1));	
+					}else{
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).remove();
+						$('.game-cell.h'+(i-count+1)+'.v'+(j+1)).remove();
+						$('.game-container').append('<div class="game-cell tile-'+
+							((gameVar[j][i - count]+value) > 2048 ? 'super' : (gameVar[j][i - count]+value))+
+							' h'+(i-count+1)+' v'+(j+1)+'"><div class="inner-text">'+(gameVar[j][i - count]+value)+'</div></div>');
+					}
+					
+					gameVar[j][i - count] = gameVar[j][i - count] + value;
+					gameVar[j][i] = 0;
+				}
+			}
+		}
+	}
+
+	return flag;
+}
+
+function moveRight(){
+	var flag = false;
+	
+	for(var j = 0; j < 4; j++){
+		var count = 0, last = 0;
+		for(var i = 3; i >= 0; i--){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+				
+				if (i < 3 && count > 0){
+					flag = true;
+					if (gameVar[j][i + count] == 0){
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).attr('class', 'game-cell tile-'+value+' h'+(i+count+1)+' v'+(j+1));	
+					} else{
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).remove();
+						$('.game-cell.h'+(i+count+1)+'.v'+(j+1)).remove();
+						$('.game-container').append('<div class="game-cell tile-'+
+							((gameVar[j][i + count]+value) > 2048 ? 'super' : (gameVar[j][i + count]+value))+
+							' h'+(i+count+1)+' v'+(j+1)+'"><div class="inner-text">'+(gameVar[j][i + count]+value)+'</div></div>');
+					}
+
+					gameVar[j][i + count] = gameVar[j][i + count] + value;
+					gameVar[j][i] = 0;
+				}
+			}
+		}
+	}
+
+	return flag;
+}
+
+function moveUp(){
+	var flag = false;
+	
+	for(var i = 0; i < 4; i++){
+		var count = 0, last = 0;
+		for(var j = 0; j < 4; j++){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (j > 0 && count > 0){
+					flag = true;
+					if (gameVar[j - count][i] == 0){
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).attr('class', 'game-cell tile-'+value+' h'+(i+1)+' v'+(j-count+1));	
+					}else{
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).remove();
+						$('.game-cell.h'+(i+1)+'.v'+(j-count+1)).remove();
+						$('.game-container').append('<div class="game-cell tile-'+
+							((gameVar[j-count][i]+value) > 2048 ? 'super' : (gameVar[j-count][i]+value))+
+							' h'+(i+1)+' v'+(j-count+1)+'"><div class="inner-text">'+(gameVar[j-count][i]+value)+'</div></div>');
+					}
+					
+					gameVar[j-count][i] = gameVar[j-count][i] + value;
+					gameVar[j][i] = 0;	
+				}
+			}
+		}
+	}
+
+	return flag;
+}
+
+function moveDown(){
+	var flag = false;
+	
+	for(var i = 0; i < 4; i++){
+		var count = 0, last = 0;
+		for(var j = 3; j >= 0; j--){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (j < 3 && count > 0){
+					flag = true;
+					if (gameVar[j + count][i] == 0){
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).attr('class', 'game-cell tile-'+value+' h'+(i+1)+' v'+(j+count+1));	
+					}else{
+						$('.game-cell.h'+(i+1)+'.v'+(j+1)).remove();
+						$('.game-cell.h'+(i+1)+'.v'+(j+count+1)).remove();
+						$('.game-container').append('<div class="game-cell tile-'+
+							((gameVar[j+count][i]+value) > 2048 ? 'super' : (gameVar[j+count][i]+value))+
+							' h'+(i+1)+' v'+(j+count+1)+'"><div class="inner-text">'+(gameVar[j+count][i]+value)+'</div></div>');
+					}
+					
+					gameVar[j+count][i] = gameVar[j+count][i] + value;
+					gameVar[j][i] = 0;	
+				}
+			}
+		}
+	}
+
+	return flag;
+}
+
+function isGameOver(){
+	var flag = true;
+	
+	for(var j = 0; j < 4; j++){
+		var count = 0, last = 0;
+		for(var i = 0; i < 4; i++){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (i > 0 && count > 0){
+					flag = false;
+				}
+			}
+		}
+	}
+
+	for(var j = 0; j < 4; j++){
+		var count = 0, last = 0;
+		for(var i = 3; i >= 0; i--){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+				
+				if (i < 3 && count > 0){
+					flag = false;
+				}
+			}
+		}
+	}
+
+	for(var i = 0; i < 4; i++){
+		var count = 0, last = 0;
+		for(var j = 0; j < 4; j++){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (j > 0 && count > 0){
+					flag = false;
+				}
+			}
+		}
+	}
+
+	for(var i = 0; i < 4; i++){
+		var count = 0, last = 0;
+		for(var j = 3; j >= 0; j--){
+			var value = gameVar[j][i];
+			if (value == 0){
+				count++;
+			} else if (value > 0){
+				if (value == last){
+					count++;
+					last = 0;
+				}else{
+					last = value;
+				}
+
+				if (j < 3 && count > 0){
+					flag = false;
+				}
+			}
+		}
+	}
+
+	return flag;
+}
+
+
+$(document).ready(function(){
+	randomNumber();
+	randomNumber();
+
+	$('body').keydown(function(){
+ 		moveGame();
+	});
+});
+
+</script>
